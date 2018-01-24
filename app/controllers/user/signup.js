@@ -1,5 +1,4 @@
 const { User } = require('../../models');
-const bcrypt = require('bcrypt');
 
 module.exports = (req, res, next) => {
     User.find({ 'local.email': req.body.email })
@@ -10,33 +9,24 @@ module.exports = (req, res, next) => {
                     message: 'Adress email exists.'
                 });
             } else {
-                bcrypt.hash(req.body.password, 10, (err, hash) => {
-                    if (err) {
-                        console.log(err);
-                        return res.status(500).json({
-                            error: err,
-                        });
-                    } else {
-                        const user = new User({
-                            'local.email': req.body.email,
-                            'local.password': hash,
-                        });
+                const user = new User({
+                    'local.email': req.body.email,
+                    'local.password': req.body.password,
+                });
 
-                        user.save()
-                        .then((result) => {
-                            console.log(result);
-                            res.status(201).json({
-                                message: 'User created',
-                            });
-                            })
-                            .catch((err) => {
-                                console.log(err);
-                                res.status(500).json({
-                                    error: err.message,
-                                });
-                            });
-                    }
-                })
+                user.save()
+                    .then((result) => {
+                        console.log(result);
+                        res.status(201).json({
+                            message: 'User created',
+                        });
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        res.status(500).json({
+                            error: err.message,
+                        });
+                    });
             }
         });
 };

@@ -16,10 +16,10 @@ router.post('/login', UserCtrl.login);
 
 router.post('/signup', UserCtrl.signup);
 
-router.delete('/:id', UserCtrl.delete);
+router.delete('/', isAuthenticated, UserCtrl.deleteAll);
+router.delete('/:id', isAuthenticated, UserCtrl.delete);
 
 router.get('/', isAuthenticated, UserCtrl.getAll);
-
 router.get('/:id', isAuthenticated, UserCtrl.get);
 
 module.exports = router;
