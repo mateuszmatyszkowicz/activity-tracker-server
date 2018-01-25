@@ -11,8 +11,9 @@ module.exports = (req, res, next) => {
         .exec()
         .then((user) => {
             logger.info(`TRY$ LOGIN ${req.body.email}`);
+
             if (!user) {
-                return res.sendStatus(HttpStatus.NOT_FOUND);
+                return res.sendStatus(HttpStatus.UNAUTHORIZED);
             }
 
             user.comparePassword(req.body.password)
@@ -28,13 +29,10 @@ module.exports = (req, res, next) => {
 
                     logger.verbose(`USER#NEW_TOKEN ${token}`);
                     return res.status(HttpStatus.OK).json({
-                        message: 'Auth successful',
                         token: token,
                     });
                 })
-                .catch((error) => {
-                    res.sendStatus(HttpStatus.UNAUTHORIZED);
-                });
+                .catch(error => res.sendStatus(HttpStatus.UNAUTHORIZED));
         })
         .catch((err) => {
             logger.error(err);

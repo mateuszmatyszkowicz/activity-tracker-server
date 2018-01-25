@@ -5,6 +5,14 @@ const dev = {
         host: 'localhost',
         port: 3000,
     },
+    database: {
+        host: 'localhost',
+        port: 27017,
+        name: 'coders',
+    },
+    mongod: {
+        path: path.join(__dirname, '../data/db'),
+    },
     JWT: {
         JWT_SECRET: 'eyJlbWFpbCI6ImFAYy5jb21tIiwidXNlcklkIjoiNWE2ODUwOTczNTI2ZGM3ODdiNWNjYzFkIiwiaWF0IjoxNTE2Nzg2NDQzLCJleHAiOjE1MTY3ODY0NzN9',
         JWT_EXPIRATION: '3h',
