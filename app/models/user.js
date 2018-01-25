@@ -17,6 +17,11 @@ const userSchema = Schema({
             required: true,
         },
     },
+}, {
+    timestamps: {
+        createdAt: 'created_at',
+        updatedAt: 'updated_at',
+    },
 });
 
 userSchema.pre('save', function (next) {
@@ -31,7 +36,7 @@ userSchema.pre('save', function (next) {
     })
 });
 
-userSchema.methods.comparePassword = function(passwordCandidate) {
+userSchema.methods.comparePassword = function (passwordCandidate) {
     let password = this.local.password;
 
     return new Promise((resolve, reject) => {

@@ -4,21 +4,21 @@ const jwt = require('jsonwebtoken');
 const JWT_KEY = require('../../../config/config').jwt.secret;
 
 module.exports = (req, res, next) => {
-    User.find({ 'local.email': req.body.email })
+    User.findOne({ 'local.email': req.body.email })
         .exec()
-        .then((users) => {
-            console.log(`Trying to log in as ${users[0].local.email}`);
-            if (users.length < 1) {
+        .then((user) => {
+            console.log(`Trying to log in as ${req.body.email}`);
+            if (!user) {
                 return res.status(404).json({
                     message: 'Please provide correct email address',
                 });
             }
 
-            users[0].comparePassword(req.body.password)
+            user.comparePassword(req.body.password)
                 .then(() => {
                     const token = jwt.sign({
-                        email: users[0].local.email,
-                        userId: users[0]._id,
+                        email: user.local.email,
+                        userId: user._id,
                     },
                         JWT_KEY
                     , {
