@@ -5,16 +5,15 @@ const morgan = require('morgan');
 
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const flash = require('connect-flash');
 
 mongoose.connect('mongodb://localhost:27017/coders');
 
 app.use(morgan('dev'));
-app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
 
-app.use(flash());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(cookieParser());
 
 require('./app/routes')(app);
 

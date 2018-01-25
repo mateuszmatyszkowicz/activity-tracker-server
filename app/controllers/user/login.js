@@ -1,7 +1,8 @@
 const { User } = require('../../models');
+const HttpStatus = require('http-status-codes');
 
 const jwt = require('jsonwebtoken');
-const JWT_KEY = require('../../../config/config').jwt.secret;
+const { JWT_SECRET, JWT_EXPIRATION } = require('../../../config/config').JWT;
 
 module.exports = (req, res, next) => {
     User.findOne({ 'local.email': req.body.email })
@@ -9,9 +10,7 @@ module.exports = (req, res, next) => {
         .then((user) => {
             console.log(`Trying to log in as ${req.body.email}`);
             if (!user) {
-                return res.status(404).json({
-                    message: 'Please provide correct email address',
-                });
+                return res.sendStatus(HttpStatus.NOT_FOUND);
             }
 
             user.comparePassword(req.body.password)
@@ -20,26 +19,24 @@ module.exports = (req, res, next) => {
                         email: user.local.email,
                         userId: user._id,
                     },
-                        JWT_KEY
+                        JWT_SECRET
                     , {
-                        expiresIn: '30m',
+                        expiresIn: JWT_EXPIRATION,
                     });
 
                     console.log(`Creating new TOKEN ${token}`);
-                    return res.status(200).json({
+                    return res.status(HttpStatus.OK).json({
                         message: 'Auth successful',
                         token: token,
                     });
                 })
                 .catch((error) => {
-                    return res.status(401).json({
-                        message: 'Auth failed',
-                    });
+                    res.sendStatus(HttpStatus.UNAUTHORIZED);
                 });
         })
         .catch((err) => {
             console.log(err);
-            res.status(500).json({
+            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
                 error: err.message,
             });
         });

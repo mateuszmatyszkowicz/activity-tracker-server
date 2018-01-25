@@ -27,7 +27,7 @@ const userSchema = Schema({
 userSchema.pre('save', function (next) {
     bcrypt.hash(this.local.password, 10, (err, hash) => {
         if (err) {
-            return next(err);
+            next(err);
         }
 
         this.local.password = hash;
@@ -42,17 +42,16 @@ userSchema.methods.comparePassword = function (passwordCandidate) {
     return new Promise((resolve, reject) => {
         bcrypt.compare(passwordCandidate, password, (err, success) => {
             if (err) {
-                return reject(err);
+                reject(err);
             }
 
             if (success) {
-                return resolve(success);
+                resolve(success);
             }
 
-            return reject();
+            reject();
         })
     })
-}
+};
 
 module.exports = mongoose.model('User', userSchema);
-

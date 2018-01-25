@@ -1,23 +1,15 @@
 const { User } = require('../../models');
+const HttpStauts = require('http-status-codes');
 
 module.exports = (req, res, next) => {
     User.remove({ _id: req.params.id})
         .exec()
         .then((result) => {
-            console.log(result);
-            if (result.n) {
-                return res.status(200).json({
-                    message: 'User deleted',
-                });
-            }
-
-            res.status(409).json({
-                message: 'User not found',
-            });
+            res.sendStatus(HttpStauts.OK);
         })
         .catch((err) => {
             console.log(err);
-            res.status(500).json({
+            res.status(HttpStauts.INTERNAL_SERVER_ERROR).json({
                 error: err.message,
             });
         });
