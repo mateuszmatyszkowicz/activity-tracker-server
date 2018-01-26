@@ -14,7 +14,7 @@ const dev = {
         path: path.join(__dirname, '../data/db'),
     },
     JWT: {
-        JWT_SECRET: 'eyJlbWFpbCI6ImFAYy5jb21tIiwidXNlcklkIjoiNWE2ODUwOTczNTI2ZGM3ODdiNWNjYzFkIiwiaWF0IjoxNTE2Nzg2NDQzLCJleHAiOjE1MTY3ODY0NzN9',
+        JWT_SECRET: process.env.JWT_SECRET,
         JWT_EXPIRATION: '3h',
     },
     logger: {
@@ -25,4 +25,4 @@ const dev = {
 const prod = {
 };
 
-module.exports = process.env === 'prod' ? prod : dev;
+module.exports = process.env.NODE_ENV === 'prod' ? prod : dev;

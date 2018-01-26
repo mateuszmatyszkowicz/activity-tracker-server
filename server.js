@@ -9,14 +9,12 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const logger = require('./src/lib/logger');
 
-if (!fs.existsSync(config.logger.path)) {
-    fs.mkdirSync(config.logger.path);
-};
+fs.existsSync(config.logger.path) || fs.mkdirSync(config.logger.path);
 
 mongoose.connect(`mongodb://${config.database.host}:${config.database.port}/${config.database.name}`);
 
 const morganLogStream = fs.createWriteStream(path.join(config.logger.path, 'morgan.log'), { flags: 'a' });
-app.use(morgan('tiny', { stream: morganLogStream }));
+app.use(morgan('combined', { stream: morganLogStream }));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
