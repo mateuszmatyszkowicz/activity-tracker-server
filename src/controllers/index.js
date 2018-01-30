@@ -1,9 +1,7 @@
 const boom = require('boom');
 
 const GlobalCtrl = {
-    notImplemented: (req, res, next) => {
-        next(boom.notImplemented());
-    },
+    notImplemented: (req, res, next) => next(boom.notImplemented()),
 };
 
 module.exports = {

@@ -17,6 +17,8 @@ module.exports = (req, res, next) => {
     });
 
     action.save()
-        .then(result => res.sendStatus(HttpStatus.CREATED))
+        .then(result => res.status(HttpStatus.CREATED).json({
+            id: result.id,
+        }))
         .catch(error => next(boom.internal(error)))
 };
