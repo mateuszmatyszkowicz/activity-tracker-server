@@ -1,14 +1,15 @@
-const HttpStatus = require('http-status-codes');
 const logger = require('../../lib/logger');
+const boom = require('boom');
+const HttpStatus = require('http-status-codes');
 
 const { User } = require('../../models');
 
 module.exports = (req, res, next) => {
-    User.find({ 'local.email': req.body.email })
+    User.findOne({ 'local.email': req.body.email })
         .exec()
-        .then((users) => {
-            if (users.length >= 1) {
-                return res.sendStatus(HttpStatus.CONFLICT);
+        .then((user) => {
+            if (user) {
+                return next(boom.conflict());
             } else {
                 const user = new User({
                     'local.email': req.body.email,
@@ -16,20 +17,9 @@ module.exports = (req, res, next) => {
                 });
 
                 user.save()
-                    .then((result) => {
-                        logger.verbose(`USERS#CREATE ${user.local.email}`)
-                        res.sendStatus(HttpStatus.CREATED);
-                    })
-                    .catch((err) => {
-                        logger.error(err);
-                        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-                            error: err.message,
-                        });
-                    });
+                    .then(result => res.sendStatus(HttpStatus.CREATED))
+                    .catch(error => next(boom.internal(error)));
             }
         })
-        .catch((err) => {
-            logger.error(err);
-            res.sendStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-        });
+        .catch(error => next(boom.internal(error)));
 };

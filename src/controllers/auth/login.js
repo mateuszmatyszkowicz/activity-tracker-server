@@ -1,4 +1,5 @@
 const HttpStatus = require('http-status-codes');
+const boom = require('boom');
 const logger = require('../../lib/logger');
 
 const jwt = require('jsonwebtoken');
@@ -10,10 +11,10 @@ module.exports = (req, res, next) => {
     User.findOne({ 'local.email': req.body.email })
         .exec()
         .then((user) => {
-            logger.info(`TRY$ LOGIN ${req.body.email}`);
+            logger.info(`Attempt to LOGIN as ${req.body.email}`);
 
             if (!user) {
-                return res.sendStatus(HttpStatus.UNAUTHORIZED);
+                return next(boom.unauthorized());
             }
 
             user.comparePassword(req.body.password)
@@ -27,17 +28,13 @@ module.exports = (req, res, next) => {
                         expiresIn: JWT_EXPIRATION,
                     });
 
-                    logger.verbose(`USER#NEW_TOKEN ${token}`);
+                    logger.verbose(`New token: ${token}`);
+
                     return res.status(HttpStatus.OK).json({
                         token: token,
                     });
                 })
-                .catch(error => res.sendStatus(HttpStatus.UNAUTHORIZED));
+                .catch(error => next(boom.unauthorized(error)));
         })
-        .catch((err) => {
-            logger.error(err);
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-                error: err.message,
-            });
-        });
+        .catch(error => next(boom.internal(error)));
 };
