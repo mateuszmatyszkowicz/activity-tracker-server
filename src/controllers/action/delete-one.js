@@ -8,7 +8,11 @@ const {
 } = require('../../models');
 
 module.exports = (req, res, next) => {
-    Action.findOneAndRemove({ _id: req.params.id }).exec()
-        .then(result => res.sendStatus(HttpStatus.OK))
-        .catch(error => next(boom.notAcceptable(error)));
+    if (req.body.id) {
+        Action.findById(req.params.id).exec()
+            .then(result => res.sendStatus(HttpStatus.OK))
+            .catch(error => next(boom.internal(error)));
+    } else {
+        res.sendStatus(HttpStatus.NOT_ACCEPTABLE);
+    }
 };

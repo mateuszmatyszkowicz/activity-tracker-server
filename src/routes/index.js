@@ -1,9 +1,7 @@
 const logger = require('../lib/logger');
 const boom = require('boom');
 
-
 // Middlewares
-
 const {
     isAuthenticated
 } = require('../middleware');
@@ -14,14 +12,15 @@ const Auth = require('./auth');
 const Action = require('./action');
 
 module.exports = (app) => {
+    app.get('/dispatcher', (req, res) => res.sendStatus(200));
     // Login Route,
-    app.use('/auth', Auth)
+    app.use('/auth', Auth);
 
     // User Router: CRUD
     app.use('/users', User);
 
     // Action Router: CRUD
-    app.use('/action', isAuthenticated, Action);
+    app.use('/actions', isAuthenticated, Action);
 
     // GLOBAL 404 500 ROUTES
     app.use((req, res, next) => {

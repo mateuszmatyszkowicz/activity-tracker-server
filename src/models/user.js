@@ -35,6 +35,28 @@ userSchema.pre('save', function (next) {
     })
 });
 
+userSchema.post('save', function(err, doc, next) {
+    const errors = {};
+
+    Object.keys(err.errors).forEach(key => {
+        errors[key] = {
+            message: err.errors[key].message,
+        };
+    })
+
+    next(errors);
+});
+
+userSchema.method('toJSON', function() {
+    const obj = this.toObject();
+
+    obj.id = obj._id;
+    delete obj._id;
+    delete obj.__v;
+
+    return obj;
+});
+
 userSchema.methods.comparePassword = function (passwordCandidate) {
     let password = this.local.password;
 

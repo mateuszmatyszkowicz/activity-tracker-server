@@ -8,7 +8,12 @@ const {
 } = require('../../models');
 
 module.exports = (req, res, next) => {
-    Action.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true }).exec()
-        .then(result => res.status(HttpStatus.OK).json(result))
-        .catch(error => next(boom.notAcceptable(error)));
+    if (req.body.id) {
+        Action.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
+            .exec()
+            .then(action => res.status(HttpStatus.OK).json({ action: action }))
+            .catch(error => next(boom.internal(error)));
+    } else {
+        res.sendStatus(HttpStatus.NOT_ACCEPTABLE);
+    }
 };

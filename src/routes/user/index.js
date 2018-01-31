@@ -1,24 +1,21 @@
 const router = require('express').Router();
 const boom = require('boom');
-// Middlewares
-const {
-    isAuthenticated
-} = require('../../middleware');
 
 // Controllers
 const {
-     UserCtrl
+     UserCtrl,
+     HelperCtrl,
 } = require('../../controllers');
 
-
 // Routes
-router.post('/', UserCtrl.signup);
+router.get('/:id', UserCtrl.get);
+router.post('/:id', HelperCtrl.notImplemented);
+router.put('/:id', HelperCtrl.notImplemented);
+router.delete('/:id', UserCtrl.delete);
 
-router.delete('/', isAuthenticated, UserCtrl.deleteAll);
-router.delete('/:id', isAuthenticated, UserCtrl.delete);
-
-router.get('/', isAuthenticated, UserCtrl.getAll);
-router.get('/:id', isAuthenticated, UserCtrl.get);
-router.post('/:id', (req, res, next) => next(boom.notImplemented()))
+router.get('/', UserCtrl.getAll);
+router.post('/', UserCtrl.create);
+router.put('/', HelperCtrl.notImplemented);
+router.delete('/', HelperCtrl.notImplemented);
 
 module.exports = router;
