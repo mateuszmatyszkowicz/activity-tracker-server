@@ -1,4 +1,5 @@
 const HttpStatus = require('http-status-codes');
+const boom = require('boom');
 const logger = require('../../lib/logger');
 
 const { User } = require('../../models');
@@ -15,10 +16,5 @@ module.exports = (req, res, next) => {
 
             res.status(HttpStatus.NO_CONTENT);
         })
-        .catch((err) => {
-            logger.error(err);
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-                error: err.message,
-            });
-        });
+        .catch(error => next(boom.internal(error)));
 };
