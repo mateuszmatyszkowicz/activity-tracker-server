@@ -17,9 +17,10 @@ module.exports = (req, res, next) => {
                 return next(boom.unauthorized());
             }
 
+            console.log(req.body.password);
             user.comparePassword(req.body.password)
-                .then(() => {
-                    const token = jwt.sign({
+            .then(() => {
+                const token = jwt.sign({
                         email: user.local.email,
                         userId: user._id,
                     },
