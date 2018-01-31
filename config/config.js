@@ -6,7 +6,7 @@ const dev = {
         port: 3000,
     },
     database: {
-        host: 'localhost',
+        host: 'mongo',
         port: 27017,
         name: 'coders',
     },
