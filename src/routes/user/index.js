@@ -1,6 +1,11 @@
 const router = require('express').Router();
 const boom = require('boom');
 
+// Middlewares
+const {
+    isAuthenticated,
+} = require('../../middleware');
+
 // Controllers
 const {
      UserCtrl,
@@ -8,12 +13,12 @@ const {
 } = require('../../controllers');
 
 // Routes
-router.get('/:id', UserCtrl.get);
+router.get('/:id', isAuthenticated, UserCtrl.get);
 router.post('/:id', HelperCtrl.notImplemented);
 router.put('/:id', HelperCtrl.notImplemented);
-router.delete('/:id', UserCtrl.delete);
+router.delete('/:id', isAuthenticated, UserCtrl.delete);
 
-router.get('/', UserCtrl.getAll);
+router.get('/', isAuthenticated, UserCtrl.getAll);
 router.post('/', UserCtrl.create);
 router.put('/', HelperCtrl.notImplemented);
 router.delete('/', HelperCtrl.notImplemented);
