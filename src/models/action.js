@@ -7,6 +7,10 @@ const actionSchema = Schema({
     userId: {
         type: mongoose.SchemaTypes.ObjectId,
     },
+    name: {
+        type: String,
+        required: true,
+    },
     description: {
         type: String,
     },
@@ -29,7 +33,18 @@ const actionSchema = Schema({
         createdAt: 'created_at',
         updatedAt: 'updated_at',
     },
-    versionKey: false,
+});
+
+actionSchema.post('save', function(err, doc, next) {
+    const errors = {};
+
+    Object.keys(err.errors).forEach(key => {
+        errors[key] = {
+            message: err.errors[key].message,
+        };
+    })
+
+    next(errors);
 });
 
 actionSchema.method('toJSON', function() {

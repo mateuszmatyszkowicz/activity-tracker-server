@@ -1,12 +1,6 @@
-const boom = require('boom');
-
-const GlobalCtrl = {
-    notImplemented: (req, res, next) => next(boom.notImplemented()),
-};
-
 module.exports = {
+    HelperCtrl: require('./helper'),
     ActionCtrl: require('./action'),
     AuthCtrl: require('./auth'),
     UserCtrl: require('./user'),
-    GlobalCtrl,
 };

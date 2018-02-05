@@ -1,27 +1,22 @@
 const router = require('express').Router();
 
-// Middlewares
-const {
-    isAuthenticated
-} = require('../../middleware');
-
 // Controllers
 const {
     ActionCtrl,
-    GlobalCtrl,
+    HelperCtrl,
 } = require('../../controllers');
 
 
 router.route('/:id')
     .get(ActionCtrl.getOne)
-    .post(GlobalCtrl.notImplemented)
+    .post(HelperCtrl.notImplemented)
     .put(ActionCtrl.updateOne)
     .delete(ActionCtrl.deleteOne)
 
 router.route('/')
     .get(ActionCtrl.getAll)
     .post(ActionCtrl.addOne)
-    .put(GlobalCtrl.notImplemented)
-    .delete(GlobalCtrl.notImplemented)
+    .put(HelperCtrl.notImplemented)
+    .delete(HelperCtrl.notImplemented)
 
 module.exports = router;

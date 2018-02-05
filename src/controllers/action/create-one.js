@@ -9,6 +9,7 @@ const {
 
 module.exports = (req, res, next) => {
     const action = new Action({
+        name: req.body.name,
         icon: req.body.icon,
         userId: req.userData.userId,
         color: req.body.color,
@@ -20,5 +21,7 @@ module.exports = (req, res, next) => {
         .then(result => res.status(HttpStatus.CREATED).json({
             id: result.id,
         }))
-        .catch(error => next(boom.internal(error)))
+        .catch(error => res.status(HttpStatus.NOT_ACCEPTABLE).json({
+            errors: error,
+        }))
 };

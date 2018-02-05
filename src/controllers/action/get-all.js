@@ -8,11 +8,12 @@ const {
 } = require('../../models');
 
 module.exports = (req, res, next) => {
-    Action.find({ userId: req.userData.userId }).exec()
-        .then(result =>
-            res.status(HttpStatus.OK).json({
-                actions:result
-            })
-        )
-        .catch(error => next(boom.internal(error)));
+    if (req.userData.userId) {
+        Action.find({ userId: req.userData.userId })
+            .exec()
+            .then(actions => res.status(HttpStatus.OK).json({ actions: actions }))
+            .catch(error => next(boom.internal(error)));
+    } else {
+        res.sendStatus(HttpStatus.NOT_ACCEPTABLE);
+    }
 };
