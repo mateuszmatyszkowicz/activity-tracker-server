@@ -4,4 +4,6 @@ module.exports = {
     getOne: require('./get-one'),
     getAll: require('./get-all'),
     updateOne: require('./update-one'),
+    startActivity: require('./start-activity'),
+    stopActivity: require('./stop-activity'),
 };

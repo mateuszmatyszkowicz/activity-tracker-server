@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 const Schema = mongoose.Schema;
 
-const actionSchema = Schema({
+const activitySchema = Schema({
     userId: {
         type: mongoose.SchemaTypes.ObjectId,
     },
@@ -28,6 +28,31 @@ const actionSchema = Schema({
         enum: ['freq', 'time'],
         required: true,
     },
+    active_period: {
+        start_date: {
+            type: Date,
+        },
+        end_date: {
+            type: Date,
+        },
+        status: {
+            type: String,
+        }
+    },
+    periods: [{
+        start_date: {
+            type: Date,
+        },
+        end_date: {
+            type: Date,
+        },
+        duration: {
+            type: Number,
+        },
+    }],
+    removed_at: {
+        type: Date,
+    }
 }, {
     timestamps: {
         createdAt: 'created_at',
@@ -35,7 +60,7 @@ const actionSchema = Schema({
     },
 });
 
-actionSchema.post('save', function(err, doc, next) {
+activitySchema.post('save', function(err, doc, next) {
     const errors = {};
 
     Object.keys(err.errors).forEach(key => {
@@ -47,7 +72,7 @@ actionSchema.post('save', function(err, doc, next) {
     next(errors);
 });
 
-actionSchema.method('toJSON', function() {
+activitySchema.method('toJSON', function() {
     const obj = this.toObject();
 
     obj.id = obj._id;
@@ -57,4 +82,4 @@ actionSchema.method('toJSON', function() {
     return obj;
 });
 
-module.exports = mongoose.model('Action', actionSchema);
+module.exports = mongoose.model('Action', activitySchema);

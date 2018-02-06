@@ -3,12 +3,12 @@ const boom = require('boom');
 const logger = require('../../lib/logger');
 
 const {
-    Action,
+    Activity,
     User,
 } = require('../../models');
 
 module.exports = (req, res, next) => {
-    const action = new Action({
+    const activity = new Activity({
         name: req.body.name,
         icon: req.body.icon,
         userId: req.userData.userId,
@@ -17,7 +17,7 @@ module.exports = (req, res, next) => {
         type: req.body.type,
     });
 
-    action.save()
+    activity.save()
         .then(result => res.status(HttpStatus.CREATED).json({
             id: result.id,
         }))

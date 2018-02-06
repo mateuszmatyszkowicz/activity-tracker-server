@@ -8,15 +8,19 @@ const {
 
 
 router.route('/:id')
-    .get(ActionCtrl.getOne)
-    .post(HelperCtrl.notImplemented)
-    .put(ActionCtrl.updateOne)
-    .delete(ActionCtrl.deleteOne)
+.get(ActionCtrl.getOne)
+.post(HelperCtrl.notImplemented)
+.put(ActionCtrl.updateOne)
+.delete(ActionCtrl.deleteOne);
+
+
+router.post('/:id/start', ActionCtrl.startActivity);
+router.post('/:id/stop', ActionCtrl.stopActivity);
 
 router.route('/')
     .get(ActionCtrl.getAll)
     .post(ActionCtrl.addOne)
     .put(HelperCtrl.notImplemented)
-    .delete(HelperCtrl.notImplemented)
+    .delete(HelperCtrl.notImplemented);
 
 module.exports = router;

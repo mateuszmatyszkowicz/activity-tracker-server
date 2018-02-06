@@ -1,4 +1,4 @@
 module.exports = {
-    Action: require('./action'),
+    Activity: require('./activity'),
     User: require('./user'),
 };
