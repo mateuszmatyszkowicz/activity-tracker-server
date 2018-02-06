@@ -10,7 +10,7 @@ const {
 // Models
 const User = require('./user');
 const Auth = require('./auth');
-const Action = require('./action');
+const Activity = require('./activity');
 
 // Login Route,
 router.use('/auth', Auth);
@@ -19,7 +19,7 @@ router.use('/auth', Auth);
 router.use('/users', User);
 
 // Action Router: CRUD
-router.use('/actions', isAuthenticated, Action);
+router.use('/activities', isAuthenticated, Activity);
 
 // GLOBAL 404 500 ROUTES
 router.use((req, res, next) => {

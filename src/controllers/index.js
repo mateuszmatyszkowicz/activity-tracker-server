@@ -1,6 +1,6 @@
 module.exports = {
     HelperCtrl: require('./helper'),
-    ActionCtrl: require('./action'),
+    ActionCtrl: require('./activity'),
     AuthCtrl: require('./auth'),
     UserCtrl: require('./user'),
 };

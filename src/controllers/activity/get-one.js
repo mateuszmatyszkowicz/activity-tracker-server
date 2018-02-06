@@ -3,15 +3,16 @@ const boom = require('boom');
 const logger = require('../../lib/logger');
 
 const {
-    Action,
+    Activity,
     User,
 } = require('../../models');
 
 module.exports = (req, res, next) => {
-    if (req.body.id) {
-        Action.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
-            .exec()
-            .then(action => res.status(HttpStatus.OK).json({ action: action }))
+    if (req.params.id) {
+        Activity.findById(req.params.id).exec()
+            .then(result => {
+                res.status(HttpStatus.OK).json(result)
+            })
             .catch(error => next(boom.internal(error)));
     } else {
         res.sendStatus(HttpStatus.NOT_ACCEPTABLE);
