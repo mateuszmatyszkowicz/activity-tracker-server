@@ -29,10 +29,10 @@ const activitySchema = Schema({
         required: true,
     },
     active_period: {
-        start_time: {
+        start_date: {
             type: Date,
         },
-        end_time: {
+        end_date: {
             type: Date,
         },
         status: {
@@ -40,10 +40,10 @@ const activitySchema = Schema({
         }
     },
     periods: [{
-        start_time: {
+        start_date: {
             type: Date,
         },
-        end_time: {
+        end_date: {
             type: Date,
         },
         duration: {

@@ -12,24 +12,27 @@ module.exports = (req, res) => {
         .exec()
         .then((activity) => {
             if (activity.active_period.status === 'finished') {
-                return res.sendStatus(HttpStatus.BAD_REQUEST);
+                return res.sendStatus(HttpStatus.NOT_MODIFIED);
             }
 
-            const stop_time = new Date;
-            activity.active_period.end_time = stop_time;
-            activity.active_period.status = 'finished';
+            if (req.body.end_date) {
+                activity.active_period.end_date = req.body.end_date;
+                activity.active_period.status = 'finished';
 
-            activity.periods.push({
-                start_time: activity.active_period.start_time,
-                end_time: stop_time,
-                duration: stop_time - activity.active_period.start_time,
-            });
+                activity.periods.push({
+                    start_date: activity.active_period.start_date,
+                    end_date: req.body.end_date,
+                    duration: new Date(req.body.end_date) - new Date(activity.active_period.start_date),
+                });
 
-            activity.save()
-                .then(result => res.status(HttpStatus.OK).json({
-                    result,
-                }))
-                .catch(err => logger.error(err));
+                activity.save()
+                    .then(result => res.status(HttpStatus.OK).json({
+                        result,
+                    }))
+                    .catch(err => console.log(err) && logger.error(err));
+            } else {
+                return res.sendStatus(HttpStatus.NOT_ACCEPTABLE);
+            }
         })
         .catch(err => logger.error(err));
 };

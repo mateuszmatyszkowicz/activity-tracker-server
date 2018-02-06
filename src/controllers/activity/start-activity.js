@@ -15,8 +15,8 @@ module.exports = (req, res) => {
                 return res.sendStatus(HttpStatus.NOT_MODIFIED);
             }
             const activePeriod = {
-                start_time: req.body.start_time || new Date,
-                status: (new Date(req.body.start_time) - new Date()) > 10000 ? 'upcoming' : 'during',
+                start_date: new Date(req.body.start_date),
+                status: 'during',
             };
 
             activity.active_period = activePeriod;
