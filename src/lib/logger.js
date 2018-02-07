@@ -4,10 +4,11 @@ const config = require('../../config/config').logger;
 const { createLogger, format, transports } = require('winston');
 const { combine, timestamp, label, printf } = format;
 
-const logFormat = printf(info => `${ info.timestamp } [${ info.label }] ${ info.level }: ${ info.message }`);
+const logFormat = printf(info => `${ info.timestamp } [${ info.label }] ${ info.level }: ${ JSON.stringify(info.message) }`);
 
 const Logger = createLogger({
     level: 'verbose',
+    prettyPrint: true,
     format: combine(
         label({ label: 'CODERS'}),
         timestamp(),
