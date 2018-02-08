@@ -6,4 +6,5 @@ module.exports = {
     updateOne: require('./update-one'),
     startActivity: require('./start-activity'),
     stopActivity: require('./stop-activity'),
+    getLogs: require('./get-logs'),
 };

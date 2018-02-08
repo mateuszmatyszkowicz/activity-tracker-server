@@ -8,12 +8,13 @@ const {
 
 
 router.route('/:id')
-.get(ActionCtrl.getOne)
-.post(HelperCtrl.notImplemented)
-.put(ActionCtrl.updateOne)
-.delete(ActionCtrl.deleteOne);
+    .get(ActionCtrl.getOne)
+    .post(HelperCtrl.notImplemented)
+    .put(ActionCtrl.updateOne)
+    .delete(ActionCtrl.deleteOne);
 
 
+router.get('/:id/logs', ActionCtrl.getLogs)
 router.post('/:id/start', ActionCtrl.startActivity);
 router.post('/:id/stop', ActionCtrl.stopActivity);
 
