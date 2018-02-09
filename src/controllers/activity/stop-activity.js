@@ -4,6 +4,7 @@ const logger = require('../../lib/logger');
 
 const {
     Activity,
+    Log,
     User,
 } = require('../../models');
 
@@ -11,6 +12,11 @@ module.exports = (req, res) => {
     Activity.findById(req.params.id)
         .exec()
         .then((activity) => {
+            const createLog = {
+                event: 'activity_stop',
+                activityId: req.params.id,
+            };
+
             if (activity.active_period.status === 'finished') {
                 return res.sendStatus(HttpStatus.NOT_MODIFIED);
             }
@@ -26,10 +32,24 @@ module.exports = (req, res) => {
                 });
 
                 activity.save()
-                    .then(result => res.status(HttpStatus.OK).json({
-                        result,
-                    }))
-                    .catch(err => console.log(err) && logger.error(err));
+                    .then((result) => {
+                        Log.findOne({ userId: req.userData.userId })
+                        .exec()
+                        .then(userLog => {
+                            if (userLog) {
+                                userLog.activitiesLog.push(createLog)
+
+                                userLog.save()
+                                    .then(result => logger.verbose(`activity_stopped: ${req.params.id}`))
+                                    .catch(error => logger.error(error));
+                            }
+                        })
+
+                        res.status(HttpStatus.OK).json({
+                            result,
+                        });
+                    })
+                    .catch(err => logger.error(err));
             } else {
                 return res.sendStatus(HttpStatus.NOT_ACCEPTABLE);
             }

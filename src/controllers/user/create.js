@@ -1,7 +1,10 @@
 const boom = require('boom');
 const HttpStatus = require('http-status-codes');
 
-const { User } = require('../../models');
+const {
+    User,
+    Log,
+} = require('../../models');
 
 module.exports = (req, res, next) => {
     if (req.body.email) {
@@ -17,7 +20,17 @@ module.exports = (req, res, next) => {
                     });
 
                     user.save()
-                        .then(result => res.sendStatus(HttpStatus.CREATED))
+                        .then((result) => {
+                            const userLog = new Log({
+                                userId: result.id,
+                                accountLog: [{ event: 'created_at', date: Date.now }],
+                            });
+
+                            userLog.save()
+                                .catch(error => next(error));
+
+                            return res.sendStatus(HttpStatus.CREATED);
+                        })
                         .catch(error => res.status(HttpStatus.NOT_ACCEPTABLE).json({
                             errors: error,
                         }));
@@ -25,7 +38,7 @@ module.exports = (req, res, next) => {
             })
             .catch(error => next(boom.internal(error)));
     } else {
-        res.status(HttpStatus.NOT_ACCEPTABLE).json({
+        return res.status(HttpStatus.NOT_ACCEPTABLE).json({
             errors: {
                 email: {
                     message: `Email address is required`,

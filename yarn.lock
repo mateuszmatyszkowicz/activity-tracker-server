@@ -1493,6 +1493,10 @@ mongodb@3.0.1:
   dependencies:
     mongodb-core "3.0.1"
 
+mongoose-delete@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/mongoose-delete/-/mongoose-delete-0.4.0.tgz#6eeeed56d8b478cf09ae02b5894d11380056be4a"
+
 mongoose-legacy-pluralize@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/mongoose-legacy-pluralize/-/mongoose-legacy-pluralize-1.0.1.tgz#31ae25db45c30f1448c0f93f52769e903367c701"

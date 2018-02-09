@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoose_delete = require('mongoose-delete');
 const bcrypt = require('bcrypt');
 
 const Schema = mongoose.Schema;
@@ -50,15 +51,14 @@ const activitySchema = Schema({
             type: Number,
         },
     }],
-    removed_at: {
-        type: Date,
-    }
 }, {
     timestamps: {
         createdAt: 'created_at',
         updatedAt: 'updated_at',
     },
 });
+
+activitySchema.plugin(mongoose_delete, { overrideMethods: true });
 
 activitySchema.post('save', function(err, doc, next) {
     const errors = {};

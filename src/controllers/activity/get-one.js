@@ -9,9 +9,12 @@ const {
 
 module.exports = (req, res, next) => {
     if (req.params.id) {
-        Activity.findById(req.params.id).exec()
+        Activity.findOne({ _id: req.params.id}).exec()
             .then(result => {
-                res.status(HttpStatus.OK).json(result)
+                if (result) {
+                    return res.status(HttpStatus.OK).json(result)
+                }
+                return res.sendStatus(HttpStatus.NO_CONTENT);
             })
             .catch(error => next(boom.internal(error)));
     } else {
