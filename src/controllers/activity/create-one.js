@@ -4,6 +4,7 @@ const logger = require('../../lib/logger');
 
 const {
     Activity,
+    Log,
     User,
 } = require('../../models');
 
@@ -18,9 +19,24 @@ module.exports = (req, res, next) => {
     });
 
     activity.save()
-        .then(result => res.status(HttpStatus.CREATED).json({
-            id: result.id,
-        }))
+        .then(result => {
+            Log.findOne({ userId: req.userData.userId })
+                .exec()
+                .then(userLog => {
+                    userLog.activitiesLog.push({
+                        activityId: result.id,
+                        event: 'activity_create',
+                    });
+
+                    userLog.save()
+                        .then(() => logger.info('activity_created'))
+                        .catch(error => next(error));
+                });
+
+            res.status(HttpStatus.CREATED).json({
+                id: result.id,
+            });
+        })
         .catch(error => res.status(HttpStatus.NOT_ACCEPTABLE).json({
             errors: error,
         }))

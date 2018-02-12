@@ -1,6 +1,5 @@
 const HttpStatus = require('http-status-codes');
 const boom = require('boom');
-const logger = require('../../lib/logger');
 
 const {
     Activity,

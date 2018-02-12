@@ -7,19 +7,16 @@ const {
     isAuthenticated
 } = require('../middleware');
 
-// Models
+// Route Models
 const User = require('./user');
 const Auth = require('./auth');
 const Activity = require('./activity');
-
+const Log = require('./log');
 // Login Route,
 router.use('/auth', Auth);
-
-// User Router: CRUD
-router.use('/users', User);
-
-// Action Router: CRUD
 router.use('/activities', isAuthenticated, Activity);
+router.use('/logs', isAuthenticated, Log)
+router.use('/users', User);
 
 // GLOBAL 404 500 ROUTES
 router.use((req, res, next) => {

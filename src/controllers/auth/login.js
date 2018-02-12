@@ -17,7 +17,6 @@ module.exports = (req, res, next) => {
                 return next(boom.unauthorized());
             }
 
-            console.log(req.body.password);
             user.comparePassword(req.body.password)
             .then(() => {
                 const token = jwt.sign({
