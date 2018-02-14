@@ -13,8 +13,10 @@ module.exports = (req, res) => {
         .exec()
         .then((activity) => {
             const createLog = {
-                event: 'activity_stop',
+                event: 'stop',
                 activityId: req.params.id,
+                name: activity.name,
+                type: activity.type,
             };
 
             if (activity.active_period.status === 'finished') {

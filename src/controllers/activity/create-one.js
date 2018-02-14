@@ -25,7 +25,9 @@ module.exports = (req, res, next) => {
                 .then(userLog => {
                     userLog.activitiesLog.push({
                         activityId: result.id,
-                        event: 'activity_create',
+                        event: 'create',
+                        name: req.body.name,
+                        type: req.body.type,
                     });
 
                     userLog.save()
