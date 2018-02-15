@@ -13,14 +13,16 @@ module.exports = (req, res) => {
         .exec()
         .then((activity) => {
             const createLog = {
-                event: 'activity_start',
+                event: 'start',
                 activityId: req.params.id,
+                name: activity.name,
+                type: activity.type,
             };
 
             if (activity.type === 'freq') {
                 activity.periods.push({
-                    start_date: Date.now(),
-                    end_date: Date.now(),
+                    start_date: req.body.start_date,
+                    end_date: req.body.start_date,
                 });
             } else {
                 if (activity.active_period.status === 'during') {

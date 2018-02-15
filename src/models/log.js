@@ -6,6 +6,11 @@ const logSchema = Schema({
     activitiesLog: [{
         activityId: mongoose.SchemaTypes.ObjectId,
         event: String,
+        name: String,
+        type: {
+            type: String,
+            enum: ['freq', 'time'],
+        },
         createdAt: {
             type: Date,
             default: Date.now,
