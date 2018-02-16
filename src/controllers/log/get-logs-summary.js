@@ -36,17 +36,17 @@ module.exports = (req, res, next) => {
         ]
     */
 
-    Activity.find().exec().then(res => res.forEach(doc => {
-        doc._id = new mongoose.SchemaTypes.ObjectId(doc._id);
-        //doc.userId = new mongoose.SchemaTypes.ObjectId(doc.userId);
-        doc.periods.forEach(period => {
-          //  console.log(period);
-            period.start_date = new Date(period.start_date);
-            period.stop_date = new Date(period.stop_date)
-        })
-        doc.save();
-    }))
-
+    // Activity.find().exec().then(res => res.forEach(doc => {
+    //     doc._id = new mongoose.SchemaTypes.ObjectId(doc._id);
+    //     //doc.userId = new mongoose.SchemaTypes.ObjectId(doc.userId);
+    //     doc.periods.forEach(period => {
+    //       //  console.log(period);
+    //         period.start_date = new Date(period.start_date);
+    //         period.stop_date = new Date(period.stop_date)
+    //     })
+    //     doc.save();
+    // }))
+        mongoose.set('debug', true);
     Activity.aggregate([
         {
             $unwind: '$periods',
@@ -56,18 +56,18 @@ module.exports = (req, res, next) => {
                 periods: 1,
             }
         },
-        // {
-        //     $sort: {
-        //         'periods.start_time': 1,
-        //     }
-        // },
-        // {
-        //     $match: {
-        //         'periods.start_date': {
-        //             $gte: date,
-        //         }
-        //     }
-        // },
+        {
+            $sort: {
+                'periods.start_date': 1,
+            }
+        },
+        {
+            $match: {
+                'periods.start_date': {
+                    $gte: date,
+                }
+            }
+        },
         {
             $group: {
                 _id: {
@@ -85,6 +85,25 @@ module.exports = (req, res, next) => {
             }
         },
         {
+            $sort: {
+                _id: 1,
+            }
+        },
+        {
+            $project: {
+                count: {
+                    $size: '$periods'
+                }
+            }
+        },
+        {
+            $match: {
+                count: {
+                    $gte: 1,
+                }
+            }
+        },
+        {
             $group: {
                 _id: '$_id.activityId',
                 periods: {
@@ -93,7 +112,8 @@ module.exports = (req, res, next) => {
                             $concat: [
                                 {
                                     $substrBytes: ["$_id.year", 0, 4]
-                                }, '-',
+                                }
+                                , '-',
                                 {
                                     $substrBytes: ["$_id.month", 0, 2]
                                 }, '-',
@@ -102,13 +122,11 @@ module.exports = (req, res, next) => {
                                 }
                             ],
                         },
-                        count: {
-                            $size: '$periods',
-                        }
+                        count: '$count'
                     }
                 }
             }
-        }
+        },
         // {
         //     $group: {
         //         _id: {
