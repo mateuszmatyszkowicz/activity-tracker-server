@@ -12,6 +12,7 @@ const User = require('./user');
 const Auth = require('./auth');
 const Activity = require('./activity');
 const Log = require('./log');
+
 // Login Route,
 router.use('/auth', Auth);
 router.use('/activities', isAuthenticated, Activity);
