@@ -6,36 +6,14 @@ const {
 } = require('../../models');
 
 module.exports = (req, res, next) => {
-    if (!req.query.date) {
+    if (!req.query.date || !req.query.type) {
         res.sendStatus(HttpStatus.NOT_ACCEPTABLE);
 
         return;
     }
 
     const date = new Date(req.query.date);
-
-    /*
-        Potrzebujemy zgrupować logi po id projektu, a te zaś po określonych okresach czasowych (1d, 1w, 1msc, 1year)
-        [
-            id_aktywnosci: {
-                day: [
-                    {0},
-                    {1}
-                ],
-                weeek: [
-                    {0},
-                    {1},
-                ]
-            },
-            id_aktywnosci: {
-                day...
-                week...
-                month...
-                year...
-            }
-        ]
-    */
-
+    const type = req.query.type;
     // Activity.find().exec().then(res => res.forEach(doc => {
     //     doc._id = new mongoose.SchemaTypes.ObjectId(doc._id);
     //     //doc.userId = new mongoose.SchemaTypes.ObjectId(doc.userId);
@@ -46,20 +24,32 @@ module.exports = (req, res, next) => {
     //     })
     //     doc.save();
     // }))
-        mongoose.set('debug', true);
+    mongoose.set('debug', true);
+
+    const periods = {
+        daily: {
+            id: {
+                year: { $year: '$periods.start_date' },
+                month: { $month: '$periods.start_date' },
+                day: { $dayOfMonth: '$periods.start_date' }
+            }
+        },
+        monthly: {
+            id: {
+                year: { $year: '$periods.start_date' },
+                month: { $month: '$periods.start_date' },
+            }
+        },
+        annual: {
+            id: {
+                year: { $year: '$periods.start_date' },
+            }
+        }
+    };
+
     Activity.aggregate([
         {
             $unwind: '$periods',
-        },
-        {
-            $project: {
-                periods: 1,
-            }
-        },
-        {
-            $sort: {
-                'periods.start_date': 1,
-            }
         },
         {
             $match: {
@@ -72,35 +62,20 @@ module.exports = (req, res, next) => {
             $group: {
                 _id: {
                     activityId: '$_id',
-                    'year': { $year: '$periods.start_date' },
-                    'month': { $month: '$periods.start_date' },
-                    'day': { $dayOfMonth: '$periods.start_date' }
+                    ...periods[type].id,
                 },
                 periods: {
                     $push: {
                         id: '$_id',
                         date: '$periods.start_date',
                     }
-                }
+                },
+                duration: { $sum :'$periods.duration'},
             }
         },
         {
             $sort: {
                 _id: 1,
-            }
-        },
-        {
-            $project: {
-                count: {
-                    $size: '$periods'
-                }
-            }
-        },
-        {
-            $match: {
-                count: {
-                    $gte: 1,
-                }
             }
         },
         {
@@ -122,35 +97,14 @@ module.exports = (req, res, next) => {
                                 }
                             ],
                         },
-                        count: '$count'
+                        count: { $size: '$periods' },
+                        duration: '$duration',
                     }
                 }
             }
-        },
-        // {
-        //     $group: {
-        //         _id: {
-        //             'year': { $year: '$periods.start_date' },
-        //             'month': { $month: '$periods.start_date' },
-        //             'day': { $dayOfMonth: '$periods.start_date' }
-        //         },
-        //         periods: {
-        //             $push: {
-        //                 //id: '$periods._id', // It's period ID
-        //                 activity_id: '$_id',
-        //                 date: '$periods.start_date',
-        //             },
-        //         }
-        //     }
-        // },
-        // {
-        //     $group: {
-        //         _id: '$_id',
-        //         count: { $sum: 1 }
-        //     }
-        // }
+        }
     ]).then((result) => {
-
+        // On the SPA side diagram should be default filled 0 values, and then the values should be rewrite.
         res.status(200).json({
             date: req.query.date,
             result,
